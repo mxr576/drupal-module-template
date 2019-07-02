@@ -1,0 +1,17 @@
+composer.lock
+yarn.lock
+package-lock.json
+
+build
+vendor
+node_modules
+tests/behat/failures/*
+
+docker-compose.*.yml
+runner.yml
+testrunner
+
+.idea
+.DS_Store
+*.sql
+*.sql.gz

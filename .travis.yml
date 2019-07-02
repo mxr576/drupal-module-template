@@ -1,0 +1,76 @@
+language: bash
+
+sudo: required
+
+services:
+  - docker
+
+addons:
+  apt:
+    packages:
+      - docker-ce
+      - tree
+
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
+
+env:
+  global:
+    - DOCKER_COMPOSE_VERSION=1.24.0
+    - THREADS=4
+    - COMPOSER_GLOBAL_OPTIONS="--no-interaction --no-suggest -o"
+    # Disable xDebug, because it is not required for testing.
+    - PHP_XDEBUG=0
+  matrix:
+    - CHECK_CREATED_DEV_ENV=true
+    - CHECK_CREATED_DEV_ENV=true DEPENDENCIES="--prefer-lowest"
+    - CHECK_PHPUNIT_SUPPORT=true
+    - CHECK_BEHAT_SUPPORT=true
+
+matrix:
+  fast_finish: true
+
+before_install:
+  - |
+    sudo rm /usr/local/bin/docker-compose
+    curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+    chmod +x docker-compose && sudo mv docker-compose /usr/local/bin
+  # Create a Drupal module from the template. (Composer 1.7 latest is being used because 1.8.x has a performance issue.)
+  # TL;DR You can not just pass --repository='{"type": "path", "url": "/app"}' (a JSON object) as a parameter thanks
+  # for the YML syntax o.O
+  - docker run --rm -it -v $TRAVIS_BUILD_DIR:/app -v /tmp:/tmp --user $(id -u):$(id -g) -e COMPOSER_MIRROR_PATH_REPOS=1 composer:1.7 create-project --repository=$(docker run --rm -it composer:1.7 php -r "echo json_encode(['type' => 'path', 'url' => '/app']);") -s dev pronovix/drupal-module-template /tmp/my_module
+  # Dummy permission fix for Travis because the default user's id is not 1000 (which is also the id of the "wodby" user
+  # in the containers).
+  # uid=2000(travis) gid=2000(travis) groups=2000(travis),999(docker)
+  - cd /tmp/my_module && sudo chown -R 1000:travis . $HOME/.composer && tree -a
+  - cd .dev && sudo chmod g+x -R .ci/*.sh && sudo mv travis.docker-compose.override.yml docker-compose.override.yml && docker-compose pull && docker-compose up -d && docker-compose ps
+
+script:
+  - set -e
+  # TODO validate structure of the created module from the template.
+  - |
+    if [[ $CHECK_CREATED_DEV_ENV == true ]]; then
+      .ci/install-dependencies.sh
+      # Setup the dev environment.
+      docker-compose exec php ./vendor/bin/run drupal:site-setup
+      # Ensure the dev environment is up and running.
+      curl localhost:32768
+    fi
+  - |
+    if [[ $CHECK_PHPUNIT_SUPPORT == true ]]; then
+      .ci/install-dependencies.sh
+      docker-compose exec php ./phpunit-wrapper.sh build/core/modules/node/tests/src/Functional/NodeAccessFieldTest.php
+      # Make sure Chromedriver is also configured properly.
+      docker-compose exec php ./phpunit-wrapper.sh build/core/modules/field/tests/src/FunctionalJavascript/FormJSAddMoreTest.php
+    fi
+  - |
+    if [[ $CHECK_BEHAT_SUPPORT == true ]]; then
+      .ci/install-dependencies.sh
+      RUN_BEHAT_TESTS=true .ci/run-behat-tests.sh
+    fi
