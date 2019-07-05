@@ -1,0 +1,7 @@
+name: Drupal module template
+description: Drupal module template.
+package: Pronovix
+
+type: module
+core: 8.x
+php: "7.1"
