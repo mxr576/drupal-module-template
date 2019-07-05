@@ -1,0 +1,25 @@
+{
+    "name": "pronovix/drupal-module-template",
+    "description": "Module template for Drupal modules.",
+    "type": "project",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">= 7.1"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "require-dev": {
+        "composer/composer": "~1.7.0",
+        "symfony/yaml": "^3.4 | ^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pronovix\\DrupalModuleTemplate\\": "lib/Pronovix/DrupalModuleTemplate"
+        }
+    },
+    "scripts": {
+        "post-create-project-cmd": "\\Pronovix\\DrupalModuleTemplate\\Composer::finalizeModuleCreation"
+    }
+}
