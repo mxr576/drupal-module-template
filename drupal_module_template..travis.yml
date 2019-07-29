@@ -54,7 +54,10 @@ before_install:
   - cd .dev && mv travis.docker-compose.override.yml docker-compose.override.yml && sudo chmod g+x .ci/*.sh
   - docker-compose pull && docker-compose up -d && docker-compose ps
 
-script:
+before_script:
+  # Make the script fail for any failed multi-line command (starts with "|" then new line)
   - set -e
+
+script:
   - .ci/check-cs.sh
   - .ci/run-phpunit-tests.sh

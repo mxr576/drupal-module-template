@@ -2,6 +2,9 @@
 
 set -e
 
+# List all PHP extensions with versions.
+# https://github.com/symfony/symfony/blob/5cec9e7/.travis.yml#L175
+docker-compose exec php php -r 'foreach (get_loaded_extensions() as $extension) echo $extension . " " . phpversion($extension) . PHP_EOL;'
 # We need to run both "install" and "update" commands because:
 # * `--prefer-lowest` is not supported by "install".
 # * it seems there is an issue with the merge plugin and because of that if we would only run

@@ -55,8 +55,11 @@ before_install:
   - cd /tmp/my_module && sudo chown -R 1000:travis . $HOME/.composer && tree -a
   - cd .dev && sudo chmod g+x .ci/*.sh && sudo mv travis.docker-compose.override.yml docker-compose.override.yml && docker-compose pull && docker-compose up -d && docker-compose ps
 
-script:
+before_script:
+  # Make the script fail for any failed multi-line command (starts with "|" then new line)
   - set -e
+
+script:
   # TODO validate structure of the created module from the template.
   - |
     if [[ $CHECK_CREATED_DEV_ENV == true ]]; then
