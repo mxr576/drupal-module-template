@@ -9,15 +9,15 @@
         "drupal/core": "^8.7",
         "php": "^7.1"
     },
-    "config": {
-        "sort-packages": true
-    },
     "require-dev": {
         "behat/mink": "dev-master#153e4bb",
         "drupal/drupal-extension": "^3.4.0",
         "instaclick/php-webdriver": "^1.4.5",
         "phpunit/phpunit": "^6.5",
         "webflo/drupal-core-require-dev": "^8.7"
+    },
+    "config": {
+        "sort-packages": true
     },
     "autoload": {
         "psr-4": {
