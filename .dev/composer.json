@@ -36,6 +36,7 @@
     ],
     "_comment": [
         "REQUIRE: wikimedia/composer-merge-plugin:dev-capture-input-options is required for highest-lowest testing. https://github.com/wikimedia/composer-merge-plugin/pull/169",
+        "REQUIRE: wikimedia/composer-merge-plugin cannot be replaced with a path repository yet because PathDownloader does not support symlinking modules inside its source directory.",
         "REQUIRE: consolidation/robo:^1.4.0 constraint is required for lowest testing.",
         "REQUIRE: nuvoleweb/robo-config:^0.2.2 constraint is required for lowest testing."
     ],
