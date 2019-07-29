@@ -19,7 +19,7 @@ if [[ $# -eq 0 ]]; then
   ./testrunner -verbose -threads=${THREADS} -root=build/modules/drupal_module/tests -command="$PHPUNIT"
   if [[ -d build/modules/drupal_module/modules ]]; then ./testrunner -verbose -threads=${THREADS} -root=build/modules/drupal_module/modules -command="$PHPUNIT"; fi
 else
-   # drupal-skip-dev-env-from-extension-discovery-in-testing.patch ensures the .dev directory is excluded from
-   # scanning.
+   # https://www.drupal.org/files/issues/2019-07-29/drupal-ignore-directories-in-tests-2943172-44.patch ensures the
+   # .dev directory is excluded from scanning.
    ${PHPUNIT} ${@}
 fi

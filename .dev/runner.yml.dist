@@ -37,8 +37,8 @@ drupal:
       file_scan_ignore_directories:
         - "node_modules"
         - "bower_components"
-        - "vendor"
-        - "${drupal.root}"
+        - ".git"
+        - "modules/drupal_module/.dev"
       file_private_path: "/mnt/files/private"
       trusted_host_patterns:
         - "^webserver$"

@@ -72,7 +72,7 @@
         },
         "patches": {
             "drupal/core": {
-                "Skip dev env from extension discovery in testing": "patches/drupal-skip-dev-env-from-extension-discovery-in-testing.patch"
+                "Exclude directories from PHPUnit discovery": "https://www.drupal.org/files/issues/2019-07-29/drupal-ignore-directories-in-tests-2943172-44.patch"
             }
         },
         "patchLevel": {
